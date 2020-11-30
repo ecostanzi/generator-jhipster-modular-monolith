@@ -1,0 +1,59 @@
+{
+  "name": "generator-jhipster-hexagonal-architecture",
+  "version": "0.0.0",
+  "description": "A jhipster blueprint to have an opinionated hexagonal architecture structure",
+  "keywords": [
+    "yeoman-generator",
+    "jhipster-blueprint",
+    "jhipster-5"
+  ],
+  "homepage": "https://github.com/ecostanzi/generator-jhipster-hexagonal-architecture",
+  "author": {
+    "name": "Enrico Costanzi",
+    "email": "enrico.costanzi@gmail.com",
+    "url": ""
+  },
+  "files": [
+    "generators"
+  ],
+  "main": "generators/app/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ecostanzi/generator-jhipster-hexagonal-architecture.git"
+  },
+  "dependencies": {
+    "chalk": "2.4.1"
+  },
+  "devDependencies": {
+    "chai": "4.1.2",
+    "ejs-lint": "0.3.0",
+    "eslint": "5.0.0",
+    "eslint-config-airbnb-base": "13.0.0",
+    "eslint-config-prettier": "3.1.0",
+    "eslint-plugin-import": "2.12.0",
+    "eslint-plugin-prettier": "3.0.0",
+    "fs-extra": "6.0.1",
+    "jsdoc": "3.5.5",
+    "mocha": "5.2.0",
+    "prettier": "1.14.3",
+    "sinon": "6.0.0",
+    "yeoman-assert": "3.1.1",
+    "yeoman-test": "1.7.2"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint-fix": "npm run lint -- --fix",
+    "pretest": "npm run lint",
+    "test": "npm run test:unit -- test/*.spec.js",
+    "test:unit": "mocha --timeout 20000 --slow 0 --reporter spec",
+    "jsdoc": "jsdoc --configure jsdoc-conf.json",
+    "release": "git push && git push --tags && npm publish",
+    "release:patch": "npm version patch -a -m \"Update to %s\" && npm run release",
+    "release:minor": "npm version minor -a -m \"Update to %s\" && npm run release",
+    "release:major": "npm version major -a -m \"Update to %s\" && npm run release"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ecostanzi/generator-jhipster-hexagonal-architecture/issues"
+  }
+}
