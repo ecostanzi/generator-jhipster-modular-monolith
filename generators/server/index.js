@@ -10,7 +10,7 @@ module.exports = class extends ServerGenerator {
 
         if (!jhContext) {
             this.error(
-                `This is a JHipster blueprint and should be used only like ${chalk.yellow('jhipster --blueprint hexagonal-architecture')}`
+                `This is a JHipster blueprint and should be used only like ${chalk.yellow('jhipster --blueprint modular-monolith')}`
             );
         }
 

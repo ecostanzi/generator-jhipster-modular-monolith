@@ -2,7 +2,7 @@ const path = require('path');
 const assert = require('yeoman-assert');
 const helpers = require('yeoman-test');
 
-describe('Subgenerator server of hexagonal-architecture JHipster blueprint', () => {
+describe('Subgenerator server of modular-monolith JHipster blueprint', () => {
     describe('Sample test', () => {
         before(done => {
             helpers
@@ -10,13 +10,13 @@ describe('Subgenerator server of hexagonal-architecture JHipster blueprint', () 
                 .withOptions({
                     'from-cli': true,
                     skipInstall: true,
-                    blueprint: 'hexagonal-architecture',
+                    blueprint: 'modular-monolith',
                     skipChecks: true
                 })
                 .withGenerators([
                     [
                         require('../generators/server'), // eslint-disable-line global-require
-                        'jhipster-hexagonal-architecture:server',
+                        'jhipster-modular-monolith:server',
                         path.join(__dirname, '../generators/server/index.js')
                     ]
                 ])

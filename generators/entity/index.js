@@ -1,4 +1,5 @@
 /* eslint-disable consistent-return */
+const _ = require('lodash');
 const chalk = require('chalk');
 const EntityGenerator = require('generator-jhipster/generators/entity');
 
@@ -10,7 +11,7 @@ module.exports = class extends EntityGenerator {
 
         if (!jhContext) {
             this.error(
-                `This is a JHipster blueprint and should be used only like ${chalk.yellow('jhipster --blueprint hexagonal-architecture')}`
+                `This is a JHipster blueprint and should be used only like ${chalk.yellow('jhipster --blueprint modular-monolith')}`
             );
         }
 
@@ -21,43 +22,6 @@ module.exports = class extends EntityGenerator {
     }
 
     get initializing() {
-        /**
-         * Any method beginning with _ can be reused from the superclass `EntityGenerator`
-         *
-         * There are multiple ways to customize a phase from JHipster.
-         *
-         * 1. Let JHipster handle a phase, blueprint doesnt override anything.
-         * ```
-         *      return super._initializing();
-         * ```
-         *
-         * 2. Override the entire phase, this is when the blueprint takes control of a phase
-         * ```
-         *      return {
-         *          myCustomInitPhaseStep() {
-         *              // Do all your stuff here
-         *          },
-         *          myAnotherCustomInitPhaseStep(){
-         *              // Do all your stuff here
-         *          }
-         *      };
-         * ```
-         *
-         * 3. Partially override a phase, this is when the blueprint gets the phase from JHipster and customizes it.
-         * ```
-         *      const phaseFromJHipster = super._initializing();
-         *      const myCustomPhaseSteps = {
-         *          displayLogo() {
-         *              // override the displayLogo method from the _initializing phase of JHipster
-         *          },
-         *          myCustomInitPhaseStep() {
-         *              // Do all your stuff here
-         *          },
-         *      }
-         *      return Object.assign(phaseFromJHipster, myCustomPhaseSteps);
-         * ```
-         */
-        // Here we are not overriding this phase and hence its being handled by JHipster
         return super._initializing();
     }
 
@@ -65,19 +29,49 @@ module.exports = class extends EntityGenerator {
         // Here we are not overriding this phase and hence its being handled by JHipster
         const phaseFromJHipster = super._prompting();
         const customPrompts = {
-            askDomain() {
+            askModuleName() {
+                const context = this.context;
+
+                // module is already defined
+                if (context.fileData !== undefined && context.fileData.module !== undefined) {
+                    if (context.fileData.module) {
+                        this.moduleName = context.fileData.module;
+                        this.useModule = true;
+                    } else {
+                        this.moduleName = '';
+                        this.useModule = false;
+                    }
+                    return;
+                }
+
                 const prompts = [
                     {
+                        type: 'confirm',
+                        name: 'useModule',
+                        message: 'Do you want to add your entity to a module?',
+                        default: true
+                    },
+                    {
+                        when: response => response.useModule === true,
                         type: 'input',
-                        name: 'subDomain',
-                        message: 'Custom domain?'
+                        name: 'moduleName',
+                        message: "What's the module name for your entity?",
+                        default: '',
+                        validate: input => {
+                            if (!/^([a-zA-Z0-9_]*)$/.test(input)) {
+                                return 'Your module name cannot contain special characters';
+                            }
+                            if (input === '') return 'Please provide a module name';
+                            return true;
+                        }
                     }
                 ];
 
                 const done = this.async();
                 this.prompt(prompts).then(props => {
-                    if (props.subDomain !== undefined) {
-                        this.subDomain = props.subDomain;
+                    this.useModule = props.useModule;
+                    if (this.useModule) {
+                        this.moduleName = props.moduleName;
                     }
                     done();
                 });
@@ -91,9 +85,31 @@ module.exports = class extends EntityGenerator {
 
         const myCustomPostPhaseSteps = {
             postJson() {
-                this.log(chalk.white(`Saving ${chalk.bold(this.options.name)} subDomain`));
-                // Super class creates a new file without tenantAware (6.1.2), so add tenantAware to it.
-                this.updateEntityConfig(this.context.filename, 'subDomain', this.subDomain);
+                this.context.useModule = this.useModule;
+                if (!this.useModule) {
+                    this.updateEntityConfig(this.context.filename, 'module', '');
+                    return;
+                }
+
+                // check that all the entity relationships are in the same module
+                this.context.relationships.forEach(relationship => {
+                    const relationshipData = this.fs.readJSON(`.jhipster/${relationship.otherEntityNameCapitalized}.json`);
+                    if (relationshipData.module !== this.moduleName) {
+                        throw new Error(
+                            `Cannot relate entity ${this.context.name} to entity ${
+                                relationship.otherEntityNameCapitalized
+                            }. they belong to different modules ('${this.moduleName}' and '${relationshipData.module}').`
+                        );
+                    }
+                });
+
+                this.log(chalk.white(`Saving ${chalk.bold(this.options.name)} module`));
+                this.context.useModule = this.useModule;
+                this.context.lowerCaseModuleName = _.toLower(this.moduleName);
+                this.context.capitalizedModuleName = _.capitalize(this.moduleName);
+                this.context.modulePackageName = `${this.context.packageName}.modules.${this.context.lowerCaseModuleName}`;
+                this.context.moduleFolder = `${this.context.packageFolder}/modules/${this.context.lowerCaseModuleName}`;
+                this.updateEntityConfig(this.context.filename, 'module', this.moduleName);
             }
         };
         return Object.assign(configuring, myCustomPostPhaseSteps);

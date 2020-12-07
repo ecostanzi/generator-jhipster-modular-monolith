@@ -1,17 +1,17 @@
 {
-  "name": "generator-jhipster-hexagonal-architecture",
+  "name": "generator-jhipster-modular-monolith",
   "version": "0.0.0",
-  "description": "A jhipster blueprint to have an opinionated hexagonal architecture structure",
+  "description": "A Jhipster blueprint to organize entities in a modular way`",
   "keywords": [
     "yeoman-generator",
     "jhipster-blueprint",
-    "jhipster-5"
+    "jhipster-6"
   ],
-  "homepage": "https://github.com/ecostanzi/generator-jhipster-hexagonal-architecture",
+  "homepage": "https://github.com/ecostanzi/generator-jhipster-modular-monolith",
   "author": {
     "name": "Enrico Costanzi",
     "email": "enrico.costanzi@gmail.com",
-    "url": ""
+    "url": "https://github.com/ecostanzi"
   },
   "files": [
     "generators"
@@ -19,10 +19,14 @@
   "main": "generators/app/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ecostanzi/generator-jhipster-hexagonal-architecture.git"
+    "url": "git+https://github.com/ecostanzi/generator-jhipster-modular-monolith.git"
   },
   "dependencies": {
-    "chalk": "2.4.1"
+    "chalk": "2.4.1",
+    "faker": "4.1.0",
+    "lodash": "4.17.15",
+    "generator-jhipster": "6.10.5",
+    "jhipster-core": "7.3.4"
   },
   "devDependencies": {
     "chai": "4.1.2",
@@ -54,6 +58,6 @@
   },
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/ecostanzi/generator-jhipster-hexagonal-architecture/issues"
+    "url": "https://github.com/ecostanzi/generator-jhipster-modular-monolith/issues"
   }
 }

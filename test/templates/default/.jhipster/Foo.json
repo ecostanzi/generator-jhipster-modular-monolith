@@ -1,0 +1,27 @@
+{
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "relationships": [],
+    "fields": [
+      {
+        "fieldName": "name",
+        "fieldType": "String"
+      },
+      {
+        "fieldName": "type",
+        "fieldType": "FooType",
+        "fieldValues": "TYPEA,TYPEB,TYPEC"
+      }
+    ],
+    "changelogDate": "20201228174246",
+    "dto": "mapstruct",
+    "searchEngine": false,
+    "service": "serviceImpl",
+    "entityTableName": "foo",
+    "databaseType": "sql",
+    "readOnly": false,
+    "jpaMetamodelFiltering": true,
+    "pagination": "pagination",
+    "module": "mymodule"
+  }
+  
