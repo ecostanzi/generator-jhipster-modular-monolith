@@ -63,7 +63,7 @@ module.exports = class extends EntityGenerator {
 
     get prompting() {
         // Here we are not overriding this phase and hence its being handled by JHipster
-        const phaseFromJHipster = super._initializing();
+        const phaseFromJHipster = super._prompting();
         const customPrompts = {
             askDomain() {
                 const prompts = [
