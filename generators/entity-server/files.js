@@ -492,7 +492,7 @@ const writeFiles = {
                 )}/${SERVER_MAIN_SRC_DIR}package/domain/enumeration/Enum.java.ejs`;
                 this.template(
                     pathToTemplateFile,
-                    `${SERVER_MAIN_SRC_DIR}${this.modulePackageFolder}/domain/enumeration/${fieldType}.java`,
+                    `${SERVER_MAIN_SRC_DIR}${this.moduleFolder}/domain/enumeration/${fieldType}.java`,
                     this,
                     {},
                     enumInfo
