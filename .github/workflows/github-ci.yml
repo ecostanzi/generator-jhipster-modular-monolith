@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sample: [default]
+        sample: [ecommerce]
         jhipster_version: ['6.10.5']
     timeout-minutes: 40
     steps:
@@ -37,7 +37,10 @@ jobs:
         run: npm install -g generator-jhipster@${{ matrix.jhipster_version }}
       - name: Generate project
         run: |
-          jhipster --with-entities --no-insight --skip-checks --force
+          jhipster --no-insight --skip-checks --force
+        working-directory: ./test/templates/${{ matrix.sample }}
+      - name: Import JDL
+        run: jhipster import-jdl ecommerce.jdl --force
         working-directory: ./test/templates/${{ matrix.sample }}
       - name: Run integration-tests
         run: |
