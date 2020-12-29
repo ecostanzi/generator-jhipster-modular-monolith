@@ -93,13 +93,15 @@ module.exports = class extends EntityGenerator {
 
                 // check that all the entity relationships are in the same module
                 this.context.relationships.forEach(relationship => {
-                    const relationshipData = this.fs.readJSON(`.jhipster/${relationship.otherEntityNameCapitalized}.json`);
-                    if (relationshipData.module !== this.moduleName) {
-                        throw new Error(
-                            `Cannot relate entity ${this.context.name} to entity ${
-                                relationship.otherEntityNameCapitalized
-                            }. they belong to different modules ('${this.moduleName}' and '${relationshipData.module}').`
-                        );
+                    if (relationship.otherEntityNameCapitalized !== 'User') {
+                        const relationshipData = this.fs.readJSON(`.jhipster/${relationship.otherEntityNameCapitalized}.json`);
+                        if (relationshipData.module !== this.moduleName) {
+                            throw new Error(
+                                `Cannot relate entity ${this.context.name} to entity ${
+                                    relationship.otherEntityNameCapitalized
+                                }. they belong to different modules ('${this.moduleName}' and '${relationshipData.module}').`
+                            );
+                        }
                     }
                 });
 
