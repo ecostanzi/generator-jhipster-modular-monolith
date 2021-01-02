@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sample: [default]
+        sample: [default, reactive]
         jhipster_version: ['6.10.5']
     timeout-minutes: 40
     steps:
