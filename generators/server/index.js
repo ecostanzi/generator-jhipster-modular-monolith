@@ -63,12 +63,52 @@ module.exports = class extends ServerGenerator {
 
     get prompting() {
         // Here we are not overriding this phase and hence its being handled by JHipster
-        return super._prompting();
+        const phaseFromJHipster = super._prompting();
+        const customPrompts = {
+            askModuleName() {
+                const prompts = [
+                    {
+                        type: 'confirm',
+                        name: 'useModuleForUser',
+                        message: 'Do you want to move user related classes to a module?',
+                        default: true
+                    },
+                    {
+                        when: response => response.useModuleForUser === true,
+                        type: 'input',
+                        name: 'userModuleName',
+                        message: "What's the module name for your user classes?",
+                        default: 'administration',
+                        validate: input => {
+                            if (!/^([a-zA-Z0-9_]*)$/.test(input)) {
+                                return 'Your module name cannot contain special characters';
+                            }
+                            if (input === '') return 'Please provide a module name';
+                            return true;
+                        }
+                    }
+                ];
+
+                const done = this.async();
+                this.prompt(prompts).then(props => {
+                    this.useModuleForUser = props.useModuleForUser;
+                    if (this.useModuleForUser) {
+                        this.userModuleName = props.userModuleName;
+                    }
+                    done();
+                });
+            }
+        };
+        return Object.assign(phaseFromJHipster, customPrompts);
     }
 
     get configuring() {
-        // Here we are not overriding this phase and hence its being handled by JHipster
-        return super._configuring();
+        const saveBlueprintConfig = {
+            saveBlueprintConfig() {
+                this.config.set('userModuleName', this.userModuleName);
+            }
+        };
+        return Object.assign(super._configuring(), saveBlueprintConfig);
     }
 
     get default() {
