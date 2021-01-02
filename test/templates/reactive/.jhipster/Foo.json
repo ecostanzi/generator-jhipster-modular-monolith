@@ -3,25 +3,23 @@
     "clientRootFolder": "",
     "relationships": [],
     "fields": [
-      {
-        "fieldName": "name",
-        "fieldType": "String"
-      },
-      {
-        "fieldName": "type",
-        "fieldType": "FooType",
-        "fieldValues": "TYPEA,TYPEB,TYPEC"
-      }
+        {
+            "fieldName": "name",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "type",
+            "fieldType": "FooType",
+            "fieldValues": "TYPEA,TYPEB,TYPEC"
+        }
     ],
-    "changelogDate": "20201228174246",
     "dto": "mapstruct",
     "searchEngine": false,
     "service": "serviceImpl",
     "entityTableName": "foo",
-    "databaseType": "sql",
+    "databaseType": "mongodb",
     "readOnly": false,
-    "jpaMetamodelFiltering": true,
+    "jpaMetamodelFiltering": false,
     "pagination": "pagination",
     "module": "mymodule"
-  }
-  
+}
