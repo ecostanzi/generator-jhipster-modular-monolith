@@ -28,7 +28,34 @@ module.exports = class extends EntityGenerator {
     get prompting() {
         // Here we are not overriding this phase and hence its being handled by JHipster
         const phaseFromJHipster = super._prompting();
+
         const customPrompts = {
+            askSkipRest() {
+                this.skipRest = false;
+                const context = this.context;
+
+                // module is already defined
+                if (context.fileData !== undefined && context.fileData.skipRest !== undefined) {
+                    this.skipRest = context.fileData.skipRest;
+                    return;
+                }
+
+                const prompts = [
+                    {
+                        type: 'confirm',
+                        name: 'skipRest',
+                        message: 'Do you want to skip the generation of the REST controller for your entity?',
+                        default: false
+                    }
+                ];
+
+                const done = this.async();
+                this.prompt(prompts).then(props => {
+                    this.skipRest = props.skipRest;
+                    done();
+                });
+            },
+
             askModuleName() {
                 const context = this.context;
 
@@ -75,34 +102,10 @@ module.exports = class extends EntityGenerator {
                     }
                     done();
                 });
-            },
-
-            askSkipRest() {
-                const context = this.context;
-
-                // module is already defined
-                if (context.fileData !== undefined && context.fileData.skipRest !== undefined) {
-                    this.skipRest = context.fileData.skipRest;
-                    return;
-                }
-
-                const prompts = [
-                    {
-                        type: 'confirm',
-                        name: 'skipRest',
-                        message: 'Do you want to skip the generation of the REST controller for your entity?',
-                        default: false
-                    }
-                ];
-
-                const done = this.async();
-                this.prompt(prompts).then(props => {
-                    this.skipRest = props.skipRest;
-                    done();
-                });
             }
         };
-        return Object.assign(customPrompts, phaseFromJHipster);
+
+        return Object.assign(phaseFromJHipster, customPrompts);
     }
 
     get configuring() {
@@ -141,7 +144,7 @@ module.exports = class extends EntityGenerator {
 
             configureSkipRestData() {
                 this.context.skipRest = this.skipRest;
-                this.updateEntityConfig(this.context.filename, 'skipRest', this.skipRest);
+                this.updateEntityConfig(this.context.filename, 'skipRest', this.skipRest || false);
             }
         };
         return Object.assign(configuring, myCustomPostPhaseSteps);
