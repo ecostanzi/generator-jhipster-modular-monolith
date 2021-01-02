@@ -15,4 +15,5 @@ yarn.lock
 .jhipster
 *.png
 
-!test/templates/**/*.*
+!test/templates/**/*.jdl
+!test/templates/**/*.json
