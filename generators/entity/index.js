@@ -31,8 +31,12 @@ module.exports = class extends EntityGenerator {
 
         const customPrompts = {
             askSkipRest() {
-                this.skipRest = false;
                 const context = this.context;
+
+                if (context.useConfigurationFile || context.skipServer) {
+                    this.skipRest = false;
+                    return;
+                }
 
                 // module is already defined
                 if (context.fileData !== undefined && context.fileData.skipRest !== undefined) {
@@ -40,6 +44,7 @@ module.exports = class extends EntityGenerator {
                     return;
                 }
 
+                this.skipRest = false;
                 const prompts = [
                     {
                         type: 'list',
@@ -68,6 +73,12 @@ module.exports = class extends EntityGenerator {
 
             askModuleName() {
                 const context = this.context;
+
+                if (context.useConfigurationFile || context.skipServer) {
+                    this.moduleName = '';
+                    this.useModule = false;
+                    return;
+                }
 
                 // module is already defined
                 if (context.fileData !== undefined && context.fileData.module !== undefined) {
