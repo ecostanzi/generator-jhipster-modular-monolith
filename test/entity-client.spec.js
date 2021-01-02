@@ -9,7 +9,7 @@ describe('Subgenerator entity-client of modular-monolith JHipster blueprint', ()
             helpers
                 .run('generator-jhipster/generators/entity')
                 .inTmpDir(dir => {
-                    fse.copySync(path.join(__dirname, '../test/templates/ngx-blueprint'), dir);
+                    fse.copySync(path.join(__dirname, '../test/templates/default'), dir);
                 })
                 .withOptions({
                     'from-cli': true,
