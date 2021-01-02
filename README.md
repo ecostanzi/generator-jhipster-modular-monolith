@@ -22,10 +22,7 @@ com.mycompany.myapp.modules
     ├── notification //notification module
     │   ├── config
     │   ├── domain
-    │   │   └── enumeration
     │   ├── repository
-    │   └── web
-    │       └── rest
     └── store //store module
         ├── config
         ├── domain
@@ -39,6 +36,7 @@ com.mycompany.myapp.modules
 This is useful when:
 - you want to group entity by a specific domain/architecture concept
 - you want to enforce separation of concerns without using microservices (but you may need them later)
+- you don't always need REST controllers for your entities (e.g. when doing API First Only)
 
 # Prerequisites
 
