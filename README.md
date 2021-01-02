@@ -77,6 +77,27 @@ The entity Customer is being created.
 
 ```
 
+### Skip Rest Controller
+
+You can also decide to skip the generation of the REST controller for your entity.
+
+#### Via command line
+
+```
+? Do you want to generate a REST controller for your entity? (Use arrow keys)
+> Yes, generate the REST controller as usual
+  No, skip the generation of the REST controller
+```
+
+#### Via JDL
+
+```
+@skipRest
+entity Shipment {
+    name String required
+}
+```
+
 ## Running local Blueprint version for development
 
 During development of blueprint, please note the below steps. They are very important.
