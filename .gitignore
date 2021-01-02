@@ -13,5 +13,6 @@ docs
 yarn.lock
 .DS_Store
 .jhipster
+*.png
 
 !test/templates/**/*.*
