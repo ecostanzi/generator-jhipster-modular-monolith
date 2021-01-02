@@ -28,12 +28,54 @@ module.exports = class extends EntityGenerator {
     get prompting() {
         // Here we are not overriding this phase and hence its being handled by JHipster
         const phaseFromJHipster = super._prompting();
+
         const customPrompts = {
+            askSkipRest() {
+                const context = this.context;
+
+                if (context.skipServer) return;
+
+                if (context.useConfigurationFile) {
+                    if (context.fileData.skipRest !== undefined) {
+                        this.skipRest = context.fileData.skipRest;
+                    } else {
+                        this.skipRest = false;
+                    }
+                    return;
+                }
+
+                const prompts = [
+                    {
+                        type: 'list',
+                        name: 'controller',
+                        message: 'Do you want to generate a REST controller for your entity?',
+                        choices: [
+                            {
+                                value: 'yes',
+                                name: 'Yes, generate the REST controller as usual'
+                            },
+                            {
+                                value: 'no',
+                                name: 'No, skip the generation of the REST controller'
+                            }
+                        ],
+                        default: 0
+                    }
+                ];
+
+                const done = this.async();
+                this.prompt(prompts).then(props => {
+                    this.skipRest = props.controller === 'no';
+                    done();
+                });
+            },
+
             askModuleName() {
                 const context = this.context;
 
-                // module is already defined
-                if (context.fileData !== undefined && context.fileData.module !== undefined) {
+                if (context.skipServer) return;
+
+                if (context.useConfigurationFile) {
                     if (context.fileData.module) {
                         this.moduleName = context.fileData.module;
                         this.useModule = true;
@@ -77,16 +119,17 @@ module.exports = class extends EntityGenerator {
                 });
             }
         };
-        return Object.assign(customPrompts, phaseFromJHipster);
+
+        return Object.assign(phaseFromJHipster, customPrompts);
     }
 
     get configuring() {
         const configuring = super._configuring();
 
         const myCustomPostPhaseSteps = {
-            postJson() {
-                this.context.useModule = this.useModule;
-                if (!this.useModule) {
+            configureModuleData() {
+                this.context.useModule = this.useModule || false;
+                if (!this.context.useModule) {
                     this.updateEntityConfig(this.context.filename, 'module', '');
                     return;
                 }
@@ -106,12 +149,16 @@ module.exports = class extends EntityGenerator {
                 });
 
                 this.log(chalk.white(`Saving ${chalk.bold(this.options.name)} module`));
-                this.context.useModule = this.useModule;
                 this.context.lowerCaseModuleName = _.toLower(this.moduleName);
                 this.context.capitalizedModuleName = _.capitalize(this.moduleName);
                 this.context.modulePackageName = `${this.context.packageName}.modules.${this.context.lowerCaseModuleName}`;
                 this.context.moduleFolder = `${this.context.packageFolder}/modules/${this.context.lowerCaseModuleName}`;
                 this.updateEntityConfig(this.context.filename, 'module', this.moduleName);
+            },
+
+            configureSkipRestData() {
+                this.context.skipRest = this.skipRest || false;
+                this.updateEntityConfig(this.context.filename, 'skipRest', this.context.skipRest);
             }
         };
         return Object.assign(configuring, myCustomPostPhaseSteps);

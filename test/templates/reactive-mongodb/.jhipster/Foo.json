@@ -21,5 +21,6 @@
     "readOnly": false,
     "jpaMetamodelFiltering": false,
     "pagination": "pagination",
-    "module": "mymodule"
+    "module": "mymodule",
+    "skipRest": false
 }

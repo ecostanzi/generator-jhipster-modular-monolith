@@ -1,5 +1,5 @@
 name: Build
-on: [push, pull_request]
+on: [push]
 jobs:
   unit-tests:
     name: unit tests
@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sample: [default, mongodb, reactive-mongodb]
+        sample: [sql, sql-jdl, mongodb, reactive-mongodb]
         jhipster_version: ['6.10.5']
     timeout-minutes: 40
     steps:
@@ -38,6 +38,12 @@ jobs:
       - name: Generate project
         run: |
           jhipster --with-entities --no-insight --skip-checks --force
+        working-directory: ./test/templates/${{ matrix.sample }}
+      - name: Import jdl
+        run: |
+          if [ -f "app.jdl" ]; then
+            jhipster import-jdl app.jdl --no-insight --skip-checks --force
+          fi
         working-directory: ./test/templates/${{ matrix.sample }}
       - name: Run integration-tests
         run: |

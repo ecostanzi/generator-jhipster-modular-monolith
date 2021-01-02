@@ -22,10 +22,7 @@ com.mycompany.myapp.modules
     ├── notification //notification module
     │   ├── config
     │   ├── domain
-    │   │   └── enumeration
     │   ├── repository
-    │   └── web
-    │       └── rest
     └── store //store module
         ├── config
         ├── domain
@@ -39,6 +36,7 @@ com.mycompany.myapp.modules
 This is useful when:
 - you want to group entity by a specific domain/architecture concept
 - you want to enforce separation of concerns without using microservices (but you may need them later)
+- you don't always need REST controllers for your entities (e.g. when doing API First Only)
 
 # Prerequisites
 
@@ -75,6 +73,27 @@ The entity Customer is being created.
 ? Do you want to add your entity to a module? Yes
 ? What's the module name for your entity? invoice
 
+```
+
+### Skip Rest Controller
+
+You can also decide to skip the generation of the REST controller for your entity.
+
+#### Via command line
+
+```
+? Do you want to generate a REST controller for your entity? (Use arrow keys)
+> Yes, generate the REST controller as usual
+  No, skip the generation of the REST controller
+```
+
+#### Via JDL
+
+```
+@skipRest
+entity Shipment {
+    name String required
+}
 ```
 
 ## Running local Blueprint version for development
