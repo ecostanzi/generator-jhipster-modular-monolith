@@ -42,16 +42,26 @@ module.exports = class extends EntityGenerator {
 
                 const prompts = [
                     {
-                        type: 'confirm',
-                        name: 'skipRest',
-                        message: 'Do you want to skip the generation of the REST controller for your entity?',
-                        default: false
+                        type: 'list',
+                        name: 'controller',
+                        message: 'Do you want to generate a REST controller for your entity?',
+                        choices: [
+                            {
+                                value: 'yes',
+                                name: 'Yes, generate the REST controller as usual'
+                            },
+                            {
+                                value: 'no',
+                                name: 'No, skip the generation of the REST controller'
+                            }
+                        ],
+                        default: 0
                     }
                 ];
 
                 const done = this.async();
                 this.prompt(prompts).then(props => {
-                    this.skipRest = props.skipRest;
+                    this.skipRest = props.controller === 'no';
                     done();
                 });
             },

@@ -122,7 +122,7 @@ describe('Subgenerator entity-server of modular-monolith JHipster blueprint', ()
                     service: 'serviceImpl',
                     pagination: 'paginate',
                     filtering: 'jpaMetamodel',
-                    skipRest: true
+                    controller: 'no'
                 })
                 .on('end', done);
         });
