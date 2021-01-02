@@ -33,18 +33,17 @@ module.exports = class extends EntityGenerator {
             askSkipRest() {
                 const context = this.context;
 
-                if (context.useConfigurationFile || context.skipServer) {
-                    this.skipRest = false;
+                if (context.skipServer) return;
+
+                if (context.useConfigurationFile) {
+                    if (context.fileData.skipRest !== undefined) {
+                        this.skipRest = context.fileData.skipRest;
+                    } else {
+                        this.skipRest = false;
+                    }
                     return;
                 }
 
-                // module is already defined
-                if (context.fileData !== undefined && context.fileData.skipRest !== undefined) {
-                    this.skipRest = context.fileData.skipRest;
-                    return;
-                }
-
-                this.skipRest = false;
                 const prompts = [
                     {
                         type: 'list',
@@ -74,14 +73,9 @@ module.exports = class extends EntityGenerator {
             askModuleName() {
                 const context = this.context;
 
-                if (context.useConfigurationFile || context.skipServer) {
-                    this.moduleName = '';
-                    this.useModule = false;
-                    return;
-                }
+                if (context.skipServer) return;
 
-                // module is already defined
-                if (context.fileData !== undefined && context.fileData.module !== undefined) {
+                if (context.useConfigurationFile) {
                     if (context.fileData.module) {
                         this.moduleName = context.fileData.module;
                         this.useModule = true;
@@ -134,8 +128,8 @@ module.exports = class extends EntityGenerator {
 
         const myCustomPostPhaseSteps = {
             configureModuleData() {
-                this.context.useModule = this.useModule;
-                if (!this.useModule) {
+                this.context.useModule = this.useModule || false;
+                if (!this.context.useModule) {
                     this.updateEntityConfig(this.context.filename, 'module', '');
                     return;
                 }
@@ -155,7 +149,6 @@ module.exports = class extends EntityGenerator {
                 });
 
                 this.log(chalk.white(`Saving ${chalk.bold(this.options.name)} module`));
-                this.context.useModule = this.useModule;
                 this.context.lowerCaseModuleName = _.toLower(this.moduleName);
                 this.context.capitalizedModuleName = _.capitalize(this.moduleName);
                 this.context.modulePackageName = `${this.context.packageName}.modules.${this.context.lowerCaseModuleName}`;
@@ -164,8 +157,8 @@ module.exports = class extends EntityGenerator {
             },
 
             configureSkipRestData() {
-                this.context.skipRest = this.skipRest;
-                this.updateEntityConfig(this.context.filename, 'skipRest', this.skipRest || false);
+                this.context.skipRest = this.skipRest || false;
+                this.updateEntityConfig(this.context.filename, 'skipRest', this.context.skipRest);
             }
         };
         return Object.assign(configuring, myCustomPostPhaseSteps);
