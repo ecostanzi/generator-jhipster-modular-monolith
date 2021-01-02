@@ -86,4 +86,57 @@ describe('Subgenerator entity-server of modular-monolith JHipster blueprint', ()
             assert.file([`${SERVER_MAIN_RES_DIR}config/liquibase/fake-data/mymodule/foo.csv`]);
         });
     });
+
+    describe('Test SQL JPA monolith skip REST', () => {
+        before(done => {
+            helpers
+                .run('generator-jhipster/generators/entity')
+                .inTmpDir(dir => {
+                    fse.copySync(path.join(__dirname, '../test/templates/default'), dir);
+                })
+                .withOptions({
+                    'from-cli': true,
+                    skipInstall: true,
+                    blueprint: 'modular-monolith',
+                    skipChecks: true
+                })
+                .withGenerators([
+                    [
+                        require('../generators/entity'), // eslint-disable-line global-require
+                        'jhipster-modular-monolith:entity',
+                        path.join(__dirname, '../generators/entity/index.js')
+                    ],
+                    [
+                        require('../generators/entity-server'), // eslint-disable-line global-require
+                        'jhipster-modular-monolith:entity-server',
+                        path.join(__dirname, '../generators/entity-server/index.js')
+                    ]
+                ])
+                .withArguments(['foo'])
+                .withPrompts({
+                    moduleName: 'mymodule',
+                    useModule: true,
+                    fieldAdd: false,
+                    relationshipAdd: false,
+                    dto: 'mapstruct',
+                    service: 'serviceImpl',
+                    pagination: 'paginate',
+                    filtering: 'jpaMetamodel',
+                    skipRest: true
+                })
+                .on('end', done);
+        });
+
+        it('writes skipRest flag into entity json', () => {
+            assert.JSONFileContent('.jhipster/Foo.json', { skipRest: true });
+        });
+
+        it('it does NOT generate rest controller in the default package', () => {
+            assert.noFile([`${SERVER_MAIN_SRC_DIR}com/mycompany/myapp/web/rest/FooResource.java`]);
+        });
+
+        it('it does NOT generate rest controller files in the module package', () => {
+            assert.noFile([`${SERVER_MAIN_SRC_DIR}com/mycompany/myapp/modules/mymodule/web/rest/FooResource.java`]);
+        });
+    });
 });

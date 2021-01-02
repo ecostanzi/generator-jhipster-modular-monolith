@@ -150,7 +150,7 @@ const files = {
             ]
         },
         {
-            condition: generator => !generator.embedded,
+            condition: generator => !generator.embedded && !generator.skipRest,
             path: SERVER_MAIN_SRC_DIR,
             templates: [
                 {
@@ -253,7 +253,7 @@ const files = {
     ],
     test: [
         {
-            condition: generator => !generator.embedded,
+            condition: generator => !generator.embedded && !generator.skipRest,
             path: SERVER_TEST_SRC_DIR,
             templates: [
                 {

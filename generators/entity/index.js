@@ -75,6 +75,31 @@ module.exports = class extends EntityGenerator {
                     }
                     done();
                 });
+            },
+
+            askSkipRest() {
+                const context = this.context;
+
+                // module is already defined
+                if (context.fileData !== undefined && context.fileData.skipRest !== undefined) {
+                    this.skipRest = context.fileData.skipRest;
+                    return;
+                }
+
+                const prompts = [
+                    {
+                        type: 'confirm',
+                        name: 'skipRest',
+                        message: 'Do you want to skip the generation of the REST controller for your entity?',
+                        default: false
+                    }
+                ];
+
+                const done = this.async();
+                this.prompt(prompts).then(props => {
+                    this.skipRest = props.skipRest;
+                    done();
+                });
             }
         };
         return Object.assign(customPrompts, phaseFromJHipster);
@@ -84,7 +109,7 @@ module.exports = class extends EntityGenerator {
         const configuring = super._configuring();
 
         const myCustomPostPhaseSteps = {
-            postJson() {
+            configureModuleData() {
                 this.context.useModule = this.useModule;
                 if (!this.useModule) {
                     this.updateEntityConfig(this.context.filename, 'module', '');
@@ -112,6 +137,11 @@ module.exports = class extends EntityGenerator {
                 this.context.modulePackageName = `${this.context.packageName}.modules.${this.context.lowerCaseModuleName}`;
                 this.context.moduleFolder = `${this.context.packageFolder}/modules/${this.context.lowerCaseModuleName}`;
                 this.updateEntityConfig(this.context.filename, 'module', this.moduleName);
+            },
+
+            configureSkipRestData() {
+                this.context.skipRest = this.skipRest;
+                this.updateEntityConfig(this.context.filename, 'skipRest', this.skipRest);
             }
         };
         return Object.assign(configuring, myCustomPostPhaseSteps);
